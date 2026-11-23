@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Task, TaskDocument } from './schemas/task.schema';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UsersService } from '../users/users.service';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('tasks')
 export class TasksController {
@@ -15,6 +16,7 @@ export class TasksController {
   ) {}
 
   @Post()
+  @UseGuards(AuthGuard)
   async create(@Body() payload: CreateTaskDto) {
     // Verifica que el usuario exista
     await this.usersService.findById(payload.userId);
